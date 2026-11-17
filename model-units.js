@@ -196,6 +196,7 @@ const UNIT_MAP = {
     ],
     'P360': [
         'STSC005',
+        'STSC017',
     ],
     'PR 776': [
         'BDLB008',
