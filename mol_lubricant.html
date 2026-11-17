@@ -114,7 +114,7 @@ table.part-table{min-width:520px;font-size:12px}
  <div class="header-inputs">
   <div class="input-group"><label>Tanggal Order</label><span>:</span><input type="date" id="in-date" oninput="syncData()"></div>
   <div class="input-group"><label>Shift</label><span>:</span>
-   <select id="in-shift" onchange="syncData()"><option value="">-- Pilih Shift --</option><option value="1 / SIANG">1 / SIANG</option><option value="2 / MALAM">2 / MALAM</option></select></div>
+   <select id="in-shift" onchange="shiftManual=true;syncData()"><option value="">-- Pilih Shift --</option><option value="1 / SIANG">1 / SIANG</option><option value="2 / MALAM">2 / MALAM</option></select></div>
   <div class="input-group input-group-full"><label>Remaks</label><span>:</span><div class="remaks-wrap"><textarea id="in-remaks" rows="2" autocapitalize="characters" oninput="forceUpper(this);autoGrow(this);remaksManual=!!this.value.trim();syncData()"></textarea><div class="grip" id="remaks-grip" title="Tarik untuk melebarkan"></div></div></div>
  </div>
 
@@ -278,35 +278,46 @@ function renderTables(){
 
 // Shift otomatis: 06.00-17.59 = 1 / SIANG, 18.00-05.59 = 2 / MALAM (tetap bisa diganti manual)
 function autoShift(){const h=new Date().getHours();$('in-shift').value=(h>=6&&h<18)?'1 / SIANG':'2 / MALAM'}
-function setToday(){const d=new Date();$('in-date').value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
+let shiftManual=false,autoDate=''; // shiftManual: true hanya jika Shift diganti manual oleh user
+function setToday(){const d=new Date();$('in-date').value=autoDate=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`}
 setToday();
 
 const ORDER_FIELDS=['in-shift','in-remaks'];
 const SAVED_FIELDS=['name-req','name-check','name-app','name-whs'];
 function saveDraft(){
- try{const d={parts:partList,rm:remaksManual};ORDER_FIELDS.forEach(id=>d[id]=$(id).value);sessionStorage.setItem(DRAFT_KEY,JSON.stringify(d))}catch(e){}
+ try{const d={parts:partList,rm:remaksManual,sm:shiftManual};ORDER_FIELDS.forEach(id=>d[id]=$(id).value);sessionStorage.setItem(DRAFT_KEY,JSON.stringify(d))}catch(e){}
  try{const s={};SAVED_FIELDS.forEach(id=>s[id]=$(id).value);localStorage.setItem(SAVED_KEY,JSON.stringify(s))}catch(e){}
 }
 function syncData(){saveDraft()}
 function loadDraft(){
  try{const s=JSON.parse(localStorage.getItem(SAVED_KEY)||'null');if(s)SAVED_FIELDS.forEach(id=>{if(s[id]!=null)$(id).value=String(s[id]).toUpperCase()})}catch(e){}
  try{const d=JSON.parse(sessionStorage.getItem(DRAFT_KEY)||'null');if(!d)return;
-  ORDER_FIELDS.forEach(id=>{if(d[id]!=null)$(id).value=d[id]});
-  remaksManual=!!d.rm;if(Array.isArray(d.parts))partList=d.parts.slice(0,MAX_PARTS)}catch(e){}
+  ORDER_FIELDS.forEach(id=>{if(d[id]!=null&&(id!=='in-shift'||d.sm))$(id).value=d[id]});
+  shiftManual=!!d.sm;remaksManual=!!d.rm;if(Array.isArray(d.parts))partList=d.parts.slice(0,MAX_PARTS)}catch(e){}
 }
 function resetOrder(){
  if(!confirm('Reset form?\nSemua isian, daftar item, dan riwayat yang pernah diketik (Qty, UoM, Station & Part Number tambahan) akan dihapus. Nama tanda tangan tetap.'))return;
  // hapus semua yang tersimpan di perangkat
  try{localStorage.removeItem(CAT_KEY);localStorage.removeItem(LAST_KEY)}catch(e){}
  try{sessionStorage.removeItem(DRAFT_KEY)}catch(e){}
- remaksManual=false;LAST={};CAT={...BASE_CAT};STATIONS=[...BASE_STATIONS];
+ remaksManual=false;shiftManual=false;LAST={};CAT={...BASE_CAT};STATIONS=[...BASE_STATIONS];
  ORDER_FIELDS.forEach(id=>$(id).value='');
  ['p-station','p-partno','p-type','p-brand','p-name','p-qty'].forEach(id=>$(id).value='');
  $('p-uom').value='';setToday();autoShift();partList=[];$('in-remaks').style.height='';
  refreshLists();renderTables();syncData();window.scrollTo(0,0);
 }
-loadCatalog();loadDraft();if(!$('in-shift').value)autoShift();autoGrow($('in-remaks'));renderTables();syncData();
+loadCatalog();loadDraft();if(!shiftManual||!$('in-shift').value)autoShift();autoGrow($('in-remaks'));renderTables();syncData();
 
+
+// Segarkan Shift & Tanggal otomatis (tab lama dibuka lagi, ganti jam 06.00 / 18.00, lewat tengah malam),
+// kecuali sudah diubah manual oleh user
+function refreshAuto(){
+ if(!shiftManual){const old=$('in-shift').value;autoShift();if($('in-shift').value!==old)syncData()}
+ if($('in-date').value===autoDate){const old=autoDate;setToday();if(autoDate!==old)syncData()}
+}
+document.addEventListener('visibilitychange',()=>{if(!document.hidden)refreshAuto()});
+window.addEventListener('pageshow',refreshAuto);
+setInterval(refreshAuto,60000);
 
 // HP: Shift dipindah ke baris melayang (sejajar tombol Reset Form); layar lebar: kembali ke posisi semula
 (function(){
@@ -419,7 +430,7 @@ function drawSheet(ctx,pageH){
  y=bottom;
 
  // Footer tanda tangan: tanpa bingkai, menempel di dasar halaman A4
- const FOOT=122;
+ const FOOT=185; // ruang ttd diperlebar (jarak judul → nama ±130px ≈ 2,5 cm di A4)
  y=Math.max(y+40,(pageH||0)-FOOT-20);
  const cols=[['Requested By,','name-req',''],['Checked By','name-check','SH / GL / Planner'],['Approved By,','name-app','Department Head'],['Checked By','name-whs','SCM / Lubricants Whs']];
  const sw=TW/4;
@@ -427,9 +438,9 @@ function drawSheet(ctx,pageH){
   const cx=TX+sw*k+sw/2;
   font('normal',17);ctx.fillStyle='#000';text(t,cx,y,'center');
   const nm=val(id)||'............................';
-  font('bold',19);text(nm,cx,y+72,'center');
-  const w=ctx.measureText(nm).width;line(cx-w/2,y+85,cx+w/2,y+85);
-  font('normal',16);ctx.fillStyle='#333';text(role,cx,y+107,'center');
+  font('bold',19);text(nm,cx,y+135,'center');
+  const w=Math.max(ctx.measureText(nm).width,210);line(cx-w/2,y+148,cx+w/2,y+148);
+  font('normal',16);ctx.fillStyle='#333';text(role,cx,y+170,'center');
  });
  y+=FOOT;
  return Math.max(y+20,pageH||0);

@@ -4,13 +4,14 @@
 // Dropdown Model Unit diambil dari nama model di bawah ini, dan dropdown Kode Unit
 // hanya menampilkan kode milik model yang dipilih.
 // Format: 'NAMA MODEL': [ 'KODE-1', 'KODE-2', ], (dalam tanda kutip, diakhiri koma)
-// File ini harus berada di folder yang SAMA dengan mechanic-order-app-2.html
+// File ini harus berada di folder yang SAMA dengan mol_part.html
 // =====================================================================
 const UNIT_MAP = {
     '4DW81-23D': [
         'GSFW030',
     ],
     '4DW91-29D': [
+        'GSGH001',
         'MTL012',
     ],
     '6LTA A8.9-G2': [
@@ -107,11 +108,11 @@ const UNIT_MAP = {
         'EXSD001',
         'EXSD002',
         'EXSD003',
+        'EXSD012',
     ],
     'E6215H': [
         'EXSD010',
         'EXSD011',
-        'EXSD012',
     ],
     'E6350H': [
         'EXSD005',
@@ -135,16 +136,6 @@ const UNIT_MAP = {
         'TLFD039',
         'TLFD050',
     ],
-    'FE 84G BC': [
-        'LV01-KT7164KA',
-        'LV01-KT7392KA',
-        'LV01-L7068UB',
-        'LV01-N7138G',
-        'LV01-N7199UG',
-        'LV01-N7317UG',
-        'LV01-N7475UG',
-        'LV01-N7785UG',
-    ],
     'FH16': [
         'PMVV056',
     ],
@@ -167,16 +158,6 @@ const UNIT_MAP = {
     'HCR L100-E3': [
         'DRFK001',
     ],
-    'HILUX 2.4E DC (4X4) M/T': [
-        'LV01-B9482CBA',
-        'LV01-KT8711ZN',
-    ],
-    'HILUX M/T DC': [
-        'LV01-KT8116YT',
-        'LV01-KT8930LD',
-        'LV01-KT8946LD',
-        'LV01-KT8949LD',
-    ],
     'HiLight V7+': [
         'TLAC066',
         'TLAC067',
@@ -194,9 +175,6 @@ const UNIT_MAP = {
         'TLAC059',
         'TLAC060',
     ],
-    'KIJANG INNOVA 2.4 G M/T DSL LUX': [
-        'LV01-KT1851ZB',
-    ],
     'LCC-H150-500.4K AF M1': [
         'MPKSB027',
         'MPKSB028',
@@ -209,7 +187,7 @@ const UNIT_MAP = {
         'TLDS016',
         'TLDS017',
     ],
-    'LOWBED 125 TON': [
+    'LOWBED 120 TON': [
         'LB005',
     ],
     'ME109': [
@@ -218,13 +196,6 @@ const UNIT_MAP = {
     ],
     'P360': [
         'STSC005',
-    ],
-    'PAJERO DAKAR A/T': [
-        'LV01-KT1295YW',
-        'LV102',
-    ],
-    'PAJERO SPORT GLX M/T': [
-        'LV01-KT1396ZQ',
     ],
     'PR 776': [
         'BDLB008',
@@ -273,58 +244,9 @@ const UNIT_MAP = {
     'REGALINE DIN200X150-500 H2': [
         'PTDS001',
     ],
-    'STRADA TRITON HDX KL3T JNJTR': [
-        'LV01-KT8146ZG',
-        'LV01-KT8195ZJ',
-        'LV01-KT8197ZJ',
-        'LV01-KT8568ZF',
-        'LV01-KT8569ZF',
-        'LV01-KT8758ZF',
-        'LV01-KT8760ZF',
-        'LV01-KT8913ZI',
-    ],
     'SV526D': [
         'VBSK036',
         'VBSK037',
-    ],
-    'TRITON 2.4L DC HDX (4X4) M/T': [
-        'LV01-KT8658ZN',
-        'LV01-KT8659ZN',
-        'LV01-KT8660ZN',
-        'LV01-KT8661ZN',
-        'LV01-KT8665ZN',
-        'LV01-KT8701ZN',
-        'LV01-KT8702ZN',
-        'LV01-KT8703ZN',
-        'LV01-KT8704ZN',
-        'LV01-KT8705ZN',
-        'LV01-KT8706ZN',
-        'LV01-KT8707ZN',
-        'LV01-KT8708ZN',
-        'LV01-KT8709ZN',
-        'LV01-KT8710ZN',
-        'LV01-KT8712ZN',
-        'LV01-KT8713ZN',
-        'LV01-KT8714ZN',
-        'LV01-KT8715ZN',
-    ],
-    'TRITON 2.5L DC HDX-L (4X4) M/T': [
-        'LV01-KH8487MA',
-        'LV01-KKH8485MA',
-        'LV01-KT8187ZA',
-        'LV01-KT8240WA',
-        'LV01-KT8571ZG',
-        'LV01-KT8582ZG',
-        'LV01-KT8596ZG',
-        'LV01-KT8935ZF',
-        'LV01-KT8937ZF',
-        'LV01-KT8952ZF',
-        'LV01-KT8970ZF',
-        'LV01-KT8972YV',
-        'LV01-KT8985ZF',
-    ],
-    'TRITON 2.5L SC HDX (4X4) MT': [
-        'LV01-KT8662ZN',
     ],
     'XE215C': [
         'EXXC003',

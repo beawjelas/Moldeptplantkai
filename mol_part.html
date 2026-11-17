@@ -247,7 +247,7 @@
         <div class="input-group">
             <label>Model Unit</label>
             <span>:</span>
-            <select id="in-model" onchange="refreshKode(); syncData()">
+            <select id="in-model" onchange="refreshKode(); applyDept(); syncData()">
                 <option value="">-- Pilih Model Unit --</option>
             </select>
         </div>
@@ -255,7 +255,7 @@
         <div class="input-group">
             <label>Kode Unit</label>
             <span>:</span>
-            <select id="in-kode" onchange="syncData()">
+            <select id="in-kode" onchange="applyDept(); syncData()">
                 <option value="">-- Pilih Kode Unit --</option>
             </select>
         </div>
@@ -269,7 +269,7 @@
         <div class="input-group">
             <label>Status Order</label>
             <span>:</span>
-            <select id="in-status" onchange="syncData()">
+            <select id="in-status" onchange="applyDept(); lockForm(); syncData()">
                 <option value="">-- Pilih Status Order --</option>
                 <option value="P1 : HIGH URGENT">P1 : HIGH URGENT</option>
                 <option value="P2 : MEDIUM (Service)">P2 : MEDIUM (Service)</option>
@@ -281,12 +281,8 @@
         <div class="input-group">
             <label>Dept / Section</label>
             <span>:</span>
-            <select id="in-dept" onchange="syncData()">
+            <select id="in-dept" onchange="deptAuto = false; syncData()">
                 <option value="">-- Pilih Dept / Section --</option>
-                <option value="PLANT SSE">PLANT SSE</option>
-                <option value="PLANT TYRE">PLANT TYRE</option>
-                <option value="PLANT TRACK">PLANT TRACK</option>
-                <option value="PLANT WHEEL">PLANT WHEEL</option>
             </select>
         </div>
         
@@ -296,6 +292,8 @@
             <textarea id="in-desc" rows="2" oninput="syncData()"></textarea>
         </div>
     </div>
+
+    <div id="status-hint" style="display:none;margin:8px 0;padding:8px 12px;border-radius:8px;border:1px solid #d9534f;color:#d9534f;font-size:13px;font-weight:bold;text-align:center;">Pilih Status Order dulu, form baru bisa diisi.</div>
 
     <!-- ENTRI SPAREPART -->
     <div class="part-form-box">
@@ -388,6 +386,7 @@
 <div class="copyright" id="copyright"></div>
 
 <script src="model-units.js"></script>
+<script src="section-units.js"></script>
 <script>
     // Daftar model & kode unit dibaca dari file terpisah model-units.js (hanya bisa memilih dari daftar itu)
     const UNITS = (typeof UNIT_MAP !== 'undefined' && UNIT_MAP) ? UNIT_MAP : {};
@@ -407,6 +406,34 @@
     }
     fillSelect('in-model', Object.keys(UNITS), '-- Pilih Model Unit --');
     refreshKode();
+
+    // Dept / Section otomatis: Status Order P4 -> 'PLANT'; selain itu mengikuti Section dari Kode Unit
+    // (section-units.js). Unit yang tidak ada di daftar section tetap bisa dipilih manual.
+    const UNIT_DEPT = {};
+    if (typeof SECTION_UNITS !== 'undefined') {
+        Object.keys(SECTION_UNITS).forEach(sec => {
+            SECTION_UNITS[sec].forEach(code => { UNIT_DEPT[code] = sec; });
+        });
+    }
+    // Pilihan Dept / Section = daftar section dari section-units.js + 'PLANT' (khusus Status Order P4)
+    fillSelect('in-dept', (typeof SECTION_UNITS !== 'undefined' ? Object.keys(SECTION_UNITS) : []).concat('PLANT'), '-- Pilih Dept / Section --');
+    // Form terkunci sampai Status Order dipilih
+    const LOCK_IDS = ['in-model','in-kode','in-hmkm','in-dept','in-desc','in-note','p-component','p-partno','p-partname','p-qty','p-uom','p-remarks'];
+    function lockForm() {
+        const locked = !document.getElementById('in-status').value;
+        LOCK_IDS.forEach(id => { const el = document.getElementById(id); if (el) el.disabled = locked; });
+        document.querySelectorAll('.btn-add').forEach(b => { b.disabled = locked; b.style.opacity = locked ? '.5' : ''; });
+        document.getElementById('status-hint').style.display = locked ? 'block' : 'none';
+    }
+    let deptAuto = false; // true jika isi Dept / Section terakhir berasal dari otomatis (bukan pilihan manual)
+    function applyDept() {
+        const dept = document.getElementById('in-dept');
+        const isP4 = document.getElementById('in-status').value.indexOf('P4') === 0;
+        const fromUnit = UNIT_DEPT[document.getElementById('in-kode').value];
+        if (isP4) { dept.value = 'PLANT'; deptAuto = true; }
+        else if (fromUnit) { dept.value = fromUnit; deptAuto = true; }
+        else if (deptAuto) { dept.value = ''; deptAuto = false; } // bekas otomatis, unit ini tidak punya section -> pilih manual
+    }
 
     // State penyimpanan data part list secara offline
     let partList = [];
@@ -499,11 +526,25 @@
 
 
     // Isi tanggal otomatis sesuai tanggal perangkat/browser (zona waktu lokal)
-    (function setTodayDate() {
+    // Tanggal otomatis hari ini. Kalau tab dibiarkan terbuka / dibuka lagi di hari berikutnya, tanggal ikut
+    // diperbarui sendiri (kecuali tanggal sudah diubah manual oleh user).
+    let autoDate = '';
+    function setTodayDate() {
         const d = new Date();
         const pad = n => String(n).padStart(2, '0');
-        document.getElementById('in-date').value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
-    })();
+        document.getElementById('in-date').value = autoDate = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+    function refreshDate() {
+        const el = document.getElementById('in-date');
+        if (el.value !== autoDate) return; // diubah manual -> jangan ditimpa
+        const old = autoDate;
+        setTodayDate();
+        if (autoDate !== old) syncData();
+    }
+    setTodayDate();
+    document.addEventListener('visibilitychange', () => { if (!document.hidden) refreshDate(); });
+    window.addEventListener('pageshow', refreshDate);
+    setInterval(refreshDate, 60000);
 
     const COPYRIGHT = () => `\u00A9 beawjelas & yz`;
     document.getElementById('copyright').innerText = COPYRIGHT();
@@ -559,16 +600,17 @@
         document.getElementById('in-dept').value = '';
         ['p-component','p-partno','p-partname','p-uom','p-remarks'].forEach(id => document.getElementById(id).value = '');
         document.getElementById('p-qty').value = '1';
-        const d = new Date(), pad = n => String(n).padStart(2, '0');
-        document.getElementById('in-date').value = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+        setTodayDate();
         partList = [];
         refreshKode();
         renderTables();
+        lockForm();
         syncData();
         window.scrollTo(0, 0);
     }
     loadDraft();
     renderTables();
+    lockForm();
     syncData();
 
     // HP: Status Order dipindah ke baris melayang (sejajar tombol Reset Form); layar lebar: kembali ke posisi semula
@@ -740,6 +782,12 @@
     // Buat gambar JPG utuh lalu bagikan (WhatsApp dll.) atau unduh sebagai cadangan
     function generatePng() {
         syncData();
+        if (!document.getElementById('in-status').value) {
+            alert('Harap pilih Status Order terlebih dahulu!');
+            document.getElementById('in-status').focus();
+            window.scrollTo(0, 0);
+            return;
+        }
         const isP4 = document.getElementById('in-status').value.indexOf('P4') === 0;
         if (!isP4 && (!document.getElementById('in-model').value.trim() || !document.getElementById('in-kode').value.trim())) {
             alert('Harap isi Model Unit dan Kode Unit terlebih dahulu! (Boleh dikosongkan hanya untuk Status Order P4 : CONSUMABLE)');

@@ -1,4 +1,4 @@
-// Katalog Oil/Lubricant — dibuat dari data_oil.xlsx (282 item)
+// Katalog Oil/Lubricant — dibuat dari data_oil.xlsx (278 item)
 // Format: 'PART NUMBER':{type,brand,name}. Dipakai oleh mol_lubricant.html
 const OIL_DATA={
  "004-TOP001-06":{"type": "", "brand": "", "name": "GREASE BEARING"},
@@ -15,7 +15,6 @@ const OIL_DATA={
  "10285708":{"type": "", "brand": "", "name": "GREASE NBU 30/1KG"},
  "1110020":{"type": "", "brand": "", "name": "SEAL OIL"},
  "1118606":{"type": "", "brand": "", "name": "BOLT OIL JET"},
- "1125030T13M0":{"type": "", "brand": "", "name": "OIL WATER SEPARATOR"},
  "1125030-T13M0":{"type": "", "brand": "", "name": "OIL WATER SEPARATOR"},
  "12121-96503":{"type": "", "brand": "", "name": "JET ASSY OIL"},
  "1381957":{"type": "", "brand": "", "name": "PLUG OIL SUMP"},
@@ -26,7 +25,6 @@ const OIL_DATA={
  "1479872":{"type": "", "brand": "", "name": "GASKET OIL/F"},
  "151900001":{"type": "", "brand": "", "name": "COIL"},
  "15W40-CI4-P020":{"type": "", "brand": "", "name": "HCO EO1 5W40-20 L (PAIL 20 L)"},
- "15W40E7S/D209":{"type": "", "brand": "SCANIA", "name": "SCANIA ENGINE OIL (200LTR/DRUM)"},
  "15W40-E7S/D209":{"type": "", "brand": "SCANIA", "name": "SCANIA ENGINE OIL (200LTR/DRUM)"},
  "16-09625041-0":{"type": "", "brand": "", "name": "SEAL OIL"},
  "1772712":{"type": "", "brand": "", "name": "OIL COLLECT"},
@@ -76,7 +74,6 @@ const OIL_DATA={
  "707-56-30510":{"type": "", "brand": "", "name": "SEAL OIL"},
  "708-2K-12360":{"type": "", "brand": "", "name": "OIL SEAL"},
  "711-28-49710":{"type": "", "brand": "", "name": "SEAL OIL"},
- "80W140S/D209":{"type": "", "brand": "SCANIA", "name": "SCANIA DIFFERENTIAL & FINAL DRIVE OIL (200LTR/DRUM)"},
  "80W140-S/D209":{"type": "", "brand": "SCANIA", "name": "SCANIA DIFFERENTIAL & FINAL DRIVE OIL (200LTR/DRUM)"},
  "812418":{"type": "", "brand": "", "name": "WASHER-OIL PLUG"},
  "85108914(24078865)":{"type": "", "brand": "VOLVO", "name": "VOLVO VCS COOLANT (1 DRUM = 210L)"},
@@ -255,7 +252,6 @@ const OIL_DATA={
  "SAE50HD":{"type": "", "brand": "", "name": "OLI SAE 50 HD"},
  "SAE80W-90HD":{"type": "", "brand": "", "name": "OLI SAE 80W 90 HD"},
  "SAE85W140":{"type": "", "brand": "", "name": "OLI SAE 85W 140"},
- "SLIF71007":{"type": "", "brand": "", "name": "OIL SEAL"},
  "SLIF-71007":{"type": "", "brand": "", "name": "OIL SEAL"},
  "SLIF-73019":{"type": "", "brand": "", "name": "OIL SEAL"},
  "SPIRAXS6A295":{"type": "", "brand": "SHELL", "name": "SHELL SPIRAX S6 ATF A295"},
