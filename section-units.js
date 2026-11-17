@@ -103,6 +103,7 @@ const SECTION_UNITS = {
         'LB005',
         'GSFD079',
         'GSGH001',
+        'STSC017',
     ],
     'WHEEL A2B': [
         'DTLG001',
