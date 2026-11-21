@@ -101,8 +101,8 @@ footer{margin:36px 0 0;padding-top:16px;border-top:1px solid var(--line);text-al
       <div><label for="telp">Telp / WA</label><input id="telp" type="tel" inputmode="numeric" pattern="[0-9]*" placeholder="Nomor telp / WA" autocomplete="off"></div>
       <div><label for="foto">Foto</label><input id="foto" type="file" accept="image/*"></div>
     </div>
-    <button class="btn" id="dl" type="button">UNDUH DAN KIRIM</button>
-    <p class="hint">Isi data, upload foto, review, unduh pdf lalu kirim ke admin untuk di proses.</p>
+    <button class="btn" id="dl" type="button">BUAT DANGER TAG</button>
+    <p class="hint">Isi data, upload foto, review, kirim ke admin untuk di proses.</p>
   </div>
 
   <div class="prev">
@@ -253,7 +253,7 @@ $('dl').addEventListener('click',async()=>{
     // Seperti Mol Lubricant: coba bagikan langsung (WhatsApp / grup / admin), jika tidak bisa maka unduh
     if(navigator.canShare&&navigator.canShare({files:[file]})){
       try{await navigator.share({files:[file],title:fileName});shared=true;}
-      catch(e){if(e&&e.name==='AbortError'){btn.disabled=false;btn.textContent='UNDUH DAN KIRIM';return;}}
+      catch(e){if(e&&e.name==='AbortError'){btn.disabled=false;btn.textContent='BUAT DANGER TAG';return;}}
     }
     if(!shared){
       const url=URL.createObjectURL(blob),a=document.createElement('a');
@@ -262,7 +262,7 @@ $('dl').addEventListener('click',async()=>{
       alert('File PDF berhasil diunduh. Periksa folder Download lalu kirim file tersebut ke admin.');
     }
   }catch(e){alert('Gagal membuat PDF: '+e.message);}
-  btn.disabled=false;btn.textContent='UNDUH DAN KIRIM';
+  btn.disabled=false;btn.textContent='BUAT DANGER TAG';
 });
 </script>
 </body>
