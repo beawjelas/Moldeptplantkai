@@ -40,13 +40,13 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area
 .dept{margin:0;font-size:14px;font-weight:600;color:var(--sub);letter-spacing:2px}
 /* Header mengecil saat di-scroll */
 html,body,.wrap{overflow-anchor:none}
-.hdr img,.company,.dept,.main-title,.divider,.stick{transition:height .25s ease,margin .25s ease,font-size .25s ease,padding .25s ease,letter-spacing .25s ease,box-shadow .25s ease}
+.hdr img,.company,.dept,.main-title,.divider,.stick{transition:height .3s ease,margin .3s ease,font-size .3s ease,padding .3s ease,letter-spacing .3s ease,box-shadow .3s ease}
 .stick.small{padding:4px 0 2px;box-shadow:0 6px 14px -10px rgba(0,0,0,.35)}
-.stick.small .hdr img{height:36px}
-.stick.small .company{margin:4px 0 0;font-size:12px}
-.stick.small .dept{font-size:10px;letter-spacing:1.5px}
-.stick.small .main-title{margin:6px 0 0;font-size:clamp(18px,4.5vw,24px)}
-.stick.small .divider{margin:8px auto 6px}
+.stick.small .hdr img{height:32px}
+.stick.small .company{margin:3px 0 0;font-size:11px;letter-spacing:.3px}
+.stick.small .dept{font-size:9px;letter-spacing:1.5px}
+.stick.small .main-title{margin:4px 0 0;font-size:clamp(18px,4.5vw,22px)}
+.stick.small .divider{margin:6px auto 5px}
 @media(prefers-reduced-motion:reduce){.hdr img,.company,.dept,.main-title,.divider,.stick{transition:none}}
 .main-title{margin:28px 0 0;text-align:center;font-size:clamp(26px,6.5vw,44px);font-weight:600;letter-spacing:-.5px;line-height:1.1}
 .sub{text-align:center}
@@ -156,7 +156,7 @@ footer{margin:36px 0 0;padding-top:16px;border-top:1px solid var(--line);text-al
   const reload=n?n.type==='reload':(performance.navigation&&performance.navigation.type===1);
   if(reload)location.replace('index.html');
 })();
-// Header mengecil saat scroll (dengan jeda ambang agar tidak berkedip)
+// Logo & nama mengecil (mini) saat scroll, dengan jeda ambang agar tidak berkedip
 (function(){
   const st=document.querySelector('.stick');
   if(!st)return;
