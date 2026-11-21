@@ -1,4 +1,4 @@
-Pproject ini dibuat untuk mensupport dept plant dalam Meng-order semoga membantu
+Pproject ini dibuat untuk mensupport dept plant PT. KARUNIA ARMADA INDONESIA
 
 
 (c) beawjelas & yz
