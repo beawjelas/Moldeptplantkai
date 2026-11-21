@@ -38,6 +38,15 @@ body::before{content:"";position:fixed;left:0;right:0;top:0;height:env(safe-area
 .hdr img{height:96px;width:auto;max-width:100%;filter:var(--logo-filter)}
 .company{margin:14px 0 2px;font-size:18px;font-weight:700;letter-spacing:.5px}
 .dept{margin:0;font-size:14px;font-weight:600;color:var(--sub);letter-spacing:2px}
+/* Header mengecil saat di-scroll */
+.hdr img,.company,.dept,.main-title,.divider,.stick{transition:height .25s ease,margin .25s ease,font-size .25s ease,padding .25s ease,letter-spacing .25s ease,box-shadow .25s ease}
+.stick.small{padding:4px 0 2px;box-shadow:0 6px 14px -10px rgba(0,0,0,.35)}
+.stick.small .hdr img{height:36px}
+.stick.small .company{margin:4px 0 0;font-size:12px}
+.stick.small .dept{font-size:10px;letter-spacing:1.5px}
+.stick.small .main-title{margin:6px 0 0;font-size:clamp(18px,4.5vw,24px)}
+.stick.small .divider{margin:8px auto 6px}
+@media(prefers-reduced-motion:reduce){.hdr img,.company,.dept,.main-title,.divider,.stick{transition:none}}
 .main-title{margin:28px 0 0;text-align:center;font-size:clamp(26px,6.5vw,44px);font-weight:600;letter-spacing:-.5px;line-height:1.1}
 .sub{text-align:center}
 .divider{position:relative;overflow:hidden;height:2px;max-width:520px;margin:18px auto 14px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--brand) 20%,var(--brand) 80%,transparent);box-shadow:0 0 10px var(--glow);transform-origin:center;animation:drawIn .9s ease-out both}
@@ -145,6 +154,23 @@ footer{margin:36px 0 0;padding-top:16px;border-top:1px solid var(--line);text-al
   const n=performance.getEntriesByType&&performance.getEntriesByType('navigation')[0];
   const reload=n?n.type==='reload':(performance.navigation&&performance.navigation.type===1);
   if(reload)location.replace('index.html');
+})();
+// Header mengecil saat scroll (dengan jeda ambang agar tidak berkedip)
+(function(){
+  const st=document.querySelector('.stick');
+  if(!st)return;
+  let small=false,ticking=false;
+  const mq=window.matchMedia('(max-width: 767.98px)');
+  function upd(){
+    const y=window.scrollY||document.documentElement.scrollTop;
+    if(!mq.matches){if(small){small=false;st.classList.remove('small')}ticking=false;return}
+    if(!small&&y>80){small=true;st.classList.add('small')}
+    else if(small&&y<20){small=false;st.classList.remove('small')}
+    ticking=false;
+  }
+  window.addEventListener('scroll',()=>{if(!ticking){ticking=true;requestAnimationFrame(upd)}},{passive:true});
+  if(mq.addEventListener)mq.addEventListener('change',upd);
+  upd();
 })();
 // Garis merah-putih dibuat lewat canvas agar aman untuk render PDF
 document.querySelectorAll('.stripe').forEach(el=>{
